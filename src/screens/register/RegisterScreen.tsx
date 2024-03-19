@@ -5,12 +5,8 @@ import {faUser, width} from '@fortawesome/free-solid-svg-icons/faUser';
 import {useState} from 'react';
 import {faLock} from '@fortawesome/free-solid-svg-icons';
 import CustomButton from '../../components/button/CustomButton';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../App';
 
-// type IProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
-
-const LoginScreen = ({navigation}: any) => {
+const RegisterScreen = ({navigation}: {navigation: any}) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const changeUsernameHandle = (text: string) => {
@@ -23,10 +19,10 @@ const LoginScreen = ({navigation}: any) => {
     <View style={styles.ScreenContainer}>
       <View style={styles.SectionContainer}>
         <View style={{flex: 3, flexDirection: 'column', paddingVertical: 20}}>
-          <Image source={require('../../assets/logo.png')} />
-          <Text style={styles.WelcomeText}>Xin chào!</Text>
+          {/* <Image source={require('../../assets/logo.png')} /> */}
+          <Text style={styles.WelcomeText}>Đăng ký</Text>
           <Text style={styles.WelcomeSubText}>
-            Hãy đăng nhập để xem QT có gì nhé!!!
+            Đăng ký tài khoản và tham gia trải nghiệm cùng QT!
           </Text>
         </View>
         <View style={{flex: 8, marginTop: 20}}>
@@ -49,25 +45,34 @@ const LoginScreen = ({navigation}: any) => {
                 isPassword
               />
             </View>
-            <View>
-              <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
+            <View style={{marginTop: 10}}>
+              <FormInput
+                icon={faLock}
+                value={password}
+                onChangeText={changePasswordHandle}
+                placeholder="Xác nhận mật khẩu"
+                isPassword
+              />
             </View>
+            {/* <View>
+              <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
+            </View> */}
           </View>
           {/* BUTTON */}
           <View style={{flex: 1, alignItems: 'center', marginTop: 50}}>
             <View style={{width: 300}}>
-              <CustomButton title="Đăng nhập" onPress={() => {}} />
+              <CustomButton title="Đăng ký" onPress={() => {}} />
             </View>
           </View>
         </View>
         <View style={{flex: 1}}>
           <Text style={styles.registerQ}>
-            Bạn chưa có tài khoản?
+            Bạn đã có tài khoản?
             <Text
               style={styles.registerL}
-              onPress={() => navigation.navigate("Register")}>
-             
-              Đăng kí
+              onPress={() => navigation.navigate('Login')}>
+              {' '}
+              Đăng nhập
             </Text>
           </Text>
         </View>
@@ -98,13 +103,15 @@ const styles = StyleSheet.create({
     color: COLORS.primaryLightColor,
     fontWeight: 'bold',
     marginTop: 10,
+    textAlign: 'center',
   },
   WelcomeSubText: {
     fontSize: FONT_SIZE.medium,
     color: COLORS.secondaryLightColor,
     lineHeight: 25,
     marginTop: 20,
-    width: 300,
+    // width: 200,
+    textAlign: 'center',
   },
   forgotPassword: {
     fontSize: FONT_SIZE.small,
@@ -128,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;
