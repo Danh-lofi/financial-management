@@ -1,69 +1,109 @@
-import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useState} from 'react';
 import {
-  KeyboardTypeOptions,
-  StyleSheet,
-  TextInput,
-  Touchable,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+  faEye,
+  faEyeSlash,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  Box,
+  FormControl,
+  Icon,
+  Input,
+  Pressable,
+  Stack,
+  WarningOutlineIcon,
+} from 'native-base';
+import {StyleSheet} from 'react-native';
 import {COLORS, FONT_SIZE} from '../../theme/theme';
-import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import {useState} from 'react';
 
 type IProps = {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
-  style?: object;
-  keyboardType?: KeyboardTypeOptions;
   icon: IconDefinition;
-  // onSubmitEditing: () => void;
+  label?: string;
+  helperText?: string;
+  errorText?: string;
+  isInvalid?: boolean;
+  isDisabled?: boolean;
   isPassword?: boolean;
 };
 const FormInput = ({
+  icon,
+  label,
+  placeholder,
   value,
   onChangeText,
-  placeholder,
-  keyboardType = 'default',
-  style,
-  icon,
+  helperText,
+  errorText,
+  isInvalid = false,
+  isDisabled = false,
   isPassword = false,
 }: IProps) => {
-  const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isHidden, setIsHidden] = useState<boolean>(true);
 
   return (
-    <View style={[styles.container, isFocused && styles.inputFocused]}>
-      <FontAwesomeIcon icon={icon} style={[styles.icon]} />
-      <TextInput
-        value={value}
-        secureTextEntry={isPassword && isHidden}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-        keyboardType={keyboardType}
-        style={[styles.input, style]}
-        placeholderTextColor={COLORS.secondaryLightColor}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-      />
-      {isPassword && (
-        <TouchableOpacity onPress={() => setIsHidden(!isHidden)}>
-          <FontAwesomeIcon
-            icon={isHidden ? faEyeSlash : faEye}
-            style={[styles.iconHidden]}
+    <Box w="100%">
+      <FormControl isInvalid={isInvalid} isDisabled={isDisabled}>
+        <Stack mx="4">
+          {!!label && <FormControl.Label>{label}</FormControl.Label>}
+          <Input
+            type={isHidden && isPassword ? 'password' : 'text'}
+            isReadOnly={isDisabled}
+            value={value}
+            onChangeText={onChangeText}
+            borderRadius={10}
+            backgroundColor={COLORS.bgInput}
+            color={COLORS.primaryLightColor}
+            w={{
+              base: '100%',
+            }}
+            InputLeftElement={
+              !!icon && (
+                <Icon
+                  as={<FontAwesomeIcon icon={icon} style={[styles.icon]} />}
+                  size={5}
+                  ml="2"
+                  color="muted.400"
+                />
+              )
+            }
+            InputRightElement={
+              isPassword ? (
+                <Pressable onPress={() => setIsHidden(!isHidden)}>
+                  <FontAwesomeIcon
+                    icon={isHidden ? faEyeSlash : faEye}
+                    style={[styles.iconHidden]}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
+            }
+            placeholder={placeholder}
           />
-        </TouchableOpacity>
-      )}
-    </View>
+          {!!helperText && (
+            <FormControl.HelperText>
+              Must be atleast 6 characters.
+            </FormControl.HelperText>
+          )}
+          {!!errorText && (
+            <FormControl.ErrorMessage
+              leftIcon={<WarningOutlineIcon size="xs" />}>
+              {errorText}
+            </FormControl.ErrorMessage>
+          )}
+        </Stack>
+      </FormControl>
+    </Box>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    // flexDirection: 'row',
+    // alignItems: 'center',
     borderWidth: 1,
     borderRadius: 25,
     backgroundColor: '#183153',

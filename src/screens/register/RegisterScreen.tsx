@@ -1,19 +1,32 @@
-import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
-import {COLORS, FONT_SIZE} from '../../theme/theme';
-import FormInput from '../../components/input/FormInput';
-import {faUser, width} from '@fortawesome/free-solid-svg-icons/faUser';
+import {faLock, faPhone} from '@fortawesome/free-solid-svg-icons';
+import _ from 'lodash';
 import {useState} from 'react';
-import {faLock} from '@fortawesome/free-solid-svg-icons';
+import {StyleSheet, Text, View} from 'react-native';
 import CustomButton from '../../components/button/CustomButton';
+import FormInput from '../../components/input/FormInput';
+import {COLORS, FONT_SIZE} from '../../theme/theme';
 
 const RegisterScreen = ({navigation}: {navigation: any}) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [isInvalidPhone, setIsInvalidPhone] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const changeUsernameHandle = (text: string) => {
     setUsername(text);
   };
   const changePasswordHandle = (text: string) => {
     setPassword(text);
+  };
+
+  const registerHandle = () => {
+    setLoading(true);
+    // check validate
+    if (_.isEmpty(username) || !username.match(/^[0-9]{10}$/)) {
+      setIsInvalidPhone(true);
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
   };
   return (
     <View style={styles.ScreenContainer}>
@@ -30,13 +43,13 @@ const RegisterScreen = ({navigation}: {navigation: any}) => {
           <View>
             <View>
               <FormInput
-                icon={faUser}
+                icon={faPhone}
                 value={username}
                 onChangeText={changeUsernameHandle}
-                placeholder="Tên đăng nhập"
+                placeholder="Số điện thoại"
               />
             </View>
-            <View style={{marginTop: 10}}>
+            <View style={{paddingTop: 20}}>
               <FormInput
                 icon={faLock}
                 value={password}
@@ -45,7 +58,7 @@ const RegisterScreen = ({navigation}: {navigation: any}) => {
                 isPassword
               />
             </View>
-            <View style={{marginTop: 10}}>
+            <View style={{paddingTop: 20}}>
               <FormInput
                 icon={faLock}
                 value={password}
@@ -61,7 +74,11 @@ const RegisterScreen = ({navigation}: {navigation: any}) => {
           {/* BUTTON */}
           <View style={{flex: 1, alignItems: 'center', marginTop: 50}}>
             <View style={{width: 300}}>
-              <CustomButton title="Đăng ký" onPress={() => {}} />
+              <CustomButton
+                title="Đăng ký"
+                onPress={registerHandle}
+                isLoading={loading}
+              />
             </View>
           </View>
         </View>

@@ -1,86 +1,187 @@
-import {Image, StyleSheet, Text, TextInput, View} from 'react-native';
-import {COLORS, FONT_SIZE} from '../../theme/theme';
-import FormInput from '../../components/input/FormInput';
-import {faUser, width} from '@fortawesome/free-solid-svg-icons/faUser';
+import {faKeyboard, faLock, faPhone} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import _ from 'lodash';
+import {ScrollView} from 'native-base';
 import {useState} from 'react';
-import {faLock} from '@fortawesome/free-solid-svg-icons';
+import {
+  GestureResponderEvent,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CustomButton from '../../components/button/CustomButton';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../App';
+import FormInput from '../../components/input/FormInput';
+import {COLORS, FONT_SIZE} from '../../theme/theme';
 
 // type IProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const LoginScreen = ({navigation}: any) => {
   const [username, setUsername] = useState<string>('');
+  const [isInvalidPhone, setIsInvalidPhone] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
+  const [isOTP, setIsOTP] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const changeIsOTPHandle = (value: boolean) => setIsOTP(value);
+
   const changeUsernameHandle = (text: string) => {
+    if (isInvalidPhone) {
+      setIsInvalidPhone(false);
+    }
     setUsername(text);
   };
   const changePasswordHandle = (text: string) => {
     setPassword(text);
   };
+
+  const loginHandle = () => {
+    setLoading(true);
+    // check validate
+    if (_.isEmpty(username) || !username.match(/^[0-9]{10}$/)) {
+      setIsInvalidPhone(true);
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+  };
+
   return (
     <View style={styles.ScreenContainer}>
-      <View style={styles.SectionContainer}>
-        <View style={{flex: 3, flexDirection: 'column', paddingVertical: 20}}>
-          <Image source={require('../../assets/logo.png')} />
-          <Text style={styles.WelcomeText}>Xin chào!</Text>
-          <Text style={styles.WelcomeSubText}>
-            Hãy đăng nhập để xem QT có gì nhé!!!
-          </Text>
-        </View>
-        <View style={{flex: 8, marginTop: 20}}>
-          {/* INPUT */}
-          <View>
-            <View>
-              <FormInput
-                icon={faUser}
-                value={username}
-                onChangeText={changeUsernameHandle}
-                placeholder="Tên đăng nhập"
-              />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <View style={styles.SectionContainer}>
+            <View
+              style={{flex: 1, flexDirection: 'column', paddingVertical: 20}}>
+              <Image source={require('../../assets/logo.png')} />
+              <Text style={styles.WelcomeText}>Xin chào!</Text>
+              <Text style={styles.WelcomeSubText}>
+                Hãy đăng nhập để xem QT có gì nhé!!!
+              </Text>
             </View>
-            <View style={{marginTop: 10}}>
-              <FormInput
-                icon={faLock}
-                value={password}
-                onChangeText={changePasswordHandle}
-                placeholder="Mật khẩu"
-                isPassword
-              />
+            <View style={{flex: 1, paddingTop: 20}}>
+              {/* INPUT */}
+              <View>
+                <FormInput
+                  value={username}
+                  onChangeText={changeUsernameHandle}
+                  icon={faPhone}
+                  placeholder="Số điện thoại"
+                  errorText="Số điện thoại không hợp lệ"
+                  isInvalid={isInvalidPhone}
+                />
+                {!isOTP && (
+                  <>
+                    <View style={{paddingTop: 20}}>
+                      <FormInput
+                        icon={faLock}
+                        value={password}
+                        onChangeText={changePasswordHandle}
+                        placeholder="Mật khẩu"
+                        isPassword
+                      />
+                    </View>
+                    <View>
+                      <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
+                    </View>
+                  </>
+                )}
+              </View>
+              {/* BUTTON */}
+              <View style={{flex: 1, alignItems: 'center', paddingTop: 50}}>
+                <View style={{width: 300}}>
+                  <CustomButton
+                    title={isOTP ? 'Gửi OTP' : 'Đăng nhập'}
+                    onPress={loginHandle}
+                    isLoading={loading}
+                  />
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                {/* Custom Switch */}
+                <View style={styles.switchContainer}>
+                  <View style={styles.buttonSwitch}>
+                    <TouchableOpacity
+                      style={[styles.buttonSwitchIcon]}
+                      onPress={(event: GestureResponderEvent) =>
+                        changeIsOTPHandle(false)
+                      }>
+                      <FontAwesomeIcon
+                        icon={faKeyboard}
+                        style={[styles.buttonSwitchIcon]}
+                        size={50}
+                        color={!isOTP ? COLORS.backgroundBtn : '#183153'}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.buttonSwitch}>
+                    <TouchableOpacity
+                      style={[styles.buttonSwitchIcon]}
+                      onPress={(event: GestureResponderEvent) =>
+                        changeIsOTPHandle(true)
+                      }>
+                      <Text
+                        style={[
+                          {
+                            fontSize: FONT_SIZE.extraLarge,
+                            color: isOTP ? COLORS.backgroundBtn : '#183153',
+                          },
+                        ]}>
+                        OTP
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
             </View>
-            <View>
-              <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
+            <View style={{flex: 1}}>
+              <Text style={styles.registerQ}>
+                Bạn chưa có tài khoản?{' '}
+                <Text
+                  style={styles.registerL}
+                  onPress={() => navigation.navigate('Register')}>
+                  Đăng kí
+                </Text>
+              </Text>
             </View>
           </View>
-          {/* BUTTON */}
-          <View style={{flex: 1, alignItems: 'center', marginTop: 50}}>
-            <View style={{width: 300}}>
-              <CustomButton title="Đăng nhập" onPress={() => {}} />
-            </View>
-          </View>
-        </View>
-        <View style={{flex: 1}}>
-          <Text style={styles.registerQ}>
-            Bạn chưa có tài khoản?
-            <Text
-              style={styles.registerL}
-              onPress={() => navigation.navigate("Register")}>
-             
-              Đăng kí
-            </Text>
-          </Text>
-        </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  buttonSwitchIcon: {
+    // fontSize: FONT_SIZE.extraLarge,
+    // height: 50,
+    // width: 50,
+    // color: '#183153',
+  },
+  buttonSwitchActive: {
+    color: COLORS.backgroundBtn,
+  },
+  buttonSwitch: {},
+  switchContainer: {
+    width: 300,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    // backgroundColor: '#183153',
+  },
   ScreenContainer: {
     flex: 1,
     backgroundColor: COLORS.backgroundColor,
-    flexDirection: 'column',
   },
   SectionContainer: {
     padding: 20,

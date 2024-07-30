@@ -1,16 +1,6 @@
 import Utils from "../utils/utils";
 
-interface IColors {
-    backgroundColor: string;
-    primaryBlackColor: string;
-    secondaryBlackColor: string;
-    primaryLightColor: string;
-    secondaryLightColor: string;
-    mainColor: string;
-    backgroundBtn: string;
-}
-
-export const COLORS: IColors = {
+export const COLORS = {
     backgroundColor: '#090D2B',
     primaryBlackColor: '#090C7D',
     secondaryBlackColor: '#2C4DDE',
@@ -18,6 +8,7 @@ export const COLORS: IColors = {
     secondaryLightColor: '#bfbfbf',
     mainColor: '#63e6be',
     backgroundBtn: '#74c0fc',
+    bgInput: '#183153',
 }
 
 interface IFontSize {
