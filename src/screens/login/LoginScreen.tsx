@@ -1,5 +1,6 @@
 import {faKeyboard, faLock, faPhone} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import _ from 'lodash';
 import {ScrollView} from 'native-base';
 import {useState} from 'react';
@@ -13,13 +14,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {useAuthContext} from '../../auth/useAuthContext';
 import CustomButton from '../../components/button/CustomButton';
 import FormInput from '../../components/input/FormInput';
+import {AuthStackParamList} from '../../navigation/types';
 import {COLORS, FONT_SIZE} from '../../theme/theme';
 
-// type IProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
+type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
-const LoginScreen = ({navigation}: any) => {
+const LoginScreen: React.FC<Props> = ({navigation}) => {
+  const {login} = useAuthContext();
   const [username, setUsername] = useState<string>('');
   const [isInvalidPhone, setIsInvalidPhone] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
@@ -38,13 +42,18 @@ const LoginScreen = ({navigation}: any) => {
     setPassword(text);
   };
 
-  const loginHandle = () => {
+  const loginHandle = async () => {
     setLoading(true);
-    // check validate
+
     if (_.isEmpty(username) || !username.match(/^[0-9]{10}$/)) {
       setIsInvalidPhone(true);
       setLoading(false);
       return;
+    }
+    try {
+      await login(username, password);
+    } catch (error) {
+      setLoading(false);
     }
     setLoading(false);
   };

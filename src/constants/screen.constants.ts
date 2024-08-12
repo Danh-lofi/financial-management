@@ -6,4 +6,9 @@ export const SCREENS = {
     resetPassword: 'ResetPassword',
     permissionDenied: 'PermissionDenied',
   },
+  main: {
+    home: 'Home',
+    profile: 'Profile',
+    loading: 'Loading',
+  },
 };

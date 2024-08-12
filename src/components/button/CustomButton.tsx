@@ -28,7 +28,7 @@ const CustomButton = ({onPress, title, isLoading = false}: IProps) => {
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 18,
+    paddingVertical: 14,
     borderRadius: 25,
     alignItems: 'center',
     flexDirection: 'row',

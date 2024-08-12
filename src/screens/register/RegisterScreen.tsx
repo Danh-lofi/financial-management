@@ -5,8 +5,12 @@ import {StyleSheet, Text, View} from 'react-native';
 import CustomButton from '../../components/button/CustomButton';
 import FormInput from '../../components/input/FormInput';
 import {COLORS, FONT_SIZE} from '../../theme/theme';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {AuthStackParamList} from '../../navigation/types';
 
-const RegisterScreen = ({navigation}: {navigation: any}) => {
+type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
+
+const RegisterScreen: React.FC<Props> = ({navigation}) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isInvalidPhone, setIsInvalidPhone] = useState<boolean>(false);

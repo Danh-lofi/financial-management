@@ -3,9 +3,9 @@ import {navigate} from '../services/navigate';
 import {LOCAL_STORAGE_KEYS} from '../constants/app.constants';
 import {SCREENS} from '../constants/screen.constants';
 import {LocalUtils} from '../utils/local';
-
+import toast from '../utils/toast';
+import {API_URL} from '@env';
 const toggleLoading = (value: boolean) => {};
-
 
 const axiosInstance = (
   contentType: string = 'application/json',
@@ -14,7 +14,7 @@ const axiosInstance = (
   isShowErrorMessage = true,
   allowAnonymous = false,
 ): AxiosInstance => {
-  const baseURL = `${process.env.API_URL}`;
+  const baseURL = `${API_URL}`;
 
   if (isShowLoading) toggleLoading(true);
 
@@ -53,6 +53,8 @@ const axiosInstance = (
             message = data;
           }
           //   SnakeBar.error(message);
+          toast.error({message});
+          console.log("🚀 ~ message:", message)
         }
       }
       if (error.response.status === 403) {
@@ -137,5 +139,5 @@ export const deleteAsync = (
 
 function handleUnAuthorize() {
   LocalUtils.clear();
-  navigate(SCREENS.auth.login);
+  // navigate(SCREENS.auth.login);
 }
